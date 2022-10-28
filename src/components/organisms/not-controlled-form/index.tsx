@@ -20,7 +20,6 @@ const NotControlledForm = () => {
     },
     [passwordInput],
   )
-  
 
   useEffect(() => {
     usernameInput.current?.addEventListener('input', changeUsernameInput)
