@@ -6,8 +6,7 @@ const ControlledFormik = () => {
   const formik = useFormik({
     initialValues: {
       username: '',
-      password: '',
-      selector: 'phone'
+      password: ''
     },
     validationSchema: Yup.object({
       selector: Yup.string(),
@@ -39,6 +38,7 @@ const ControlledFormik = () => {
         name="username"
         type="text"
         pattern="[A-Za-z0-9]*"
+        maxLength={10}
         onChange={handleChange}
         onBlur={formik.handleBlur}
         value={formik.values.username}
