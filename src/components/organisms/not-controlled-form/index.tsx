@@ -1,65 +1,62 @@
 import { useRef, useEffect, useCallback } from "react"
-import React from "react";
+import { Input } from "../../atoms/input"
+import { Button } from "../../atoms/button"
 
 const NotControlledForm = () => {
 
-  const usernameInput = useRef<HTMLInputElement>(null);
-  const passwordInput = useRef<HTMLInputElement>(null);
+  const usernameInput = useRef<HTMLInputElement>(null)
+  const passwordInput = useRef<HTMLInputElement>(null)
 
-  const changeUsernameInput = useCallback(
-    () => {
-      if (usernameInput.current?.value === '') alert('Username no empty')
-    },
-    [usernameInput],
-  )
-
-  const changePasswordInput = useCallback(
-    () => {
-      if (passwordInput.current?.value === '') alert('Username no empty')
-      if ((passwordInput.current?.value.length || -1) < 8) alert('Password has min length of 8')
-    },
-    [passwordInput],
-  )
+  const handleChangeUsername = useCallback(() => {
+    if (!usernameInput.current?.value) {
+      usernameInput.current?.setCustomValidity('The field username is required')
+      usernameInput.current?.reportValidity()
+      return
+    }
+    if (usernameInput.current.value.length < 5) {
+      usernameInput.current?.setCustomValidity('The field username has min len of 5')
+      usernameInput.current?.reportValidity()
+      return
+    }
+    usernameInput.current.setCustomValidity('')
+  }, [])
 
   useEffect(() => {
-    usernameInput.current?.addEventListener('input', changeUsernameInput)
-    passwordInput.current?.addEventListener('input', changePasswordInput)
+    const usernameInputCurrent = usernameInput.current
+    usernameInputCurrent?.addEventListener('input', handleChangeUsername)
   
     return () => {
-      usernameInput.current?.removeEventListener('input', changeUsernameInput)
-      passwordInput.current?.removeEventListener('input', changePasswordInput)
+      usernameInputCurrent?.removeEventListener('input', handleChangeUsername)
     }
-  }, [changePasswordInput, changeUsernameInput, usernameInput, passwordInput])
-  
-  
-  const validation = (e: any) => {
-    if (e.username === '') return false
-    if (e.password === '') return false
-    if (e.password.length < 8) return false
-    return true
-  }
-  
+  }, [handleChangeUsername])
+
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     const request = {
       username: usernameInput.current?.value,
       password: passwordInput.current?.value
     }
-    const isValid = validation(request) ? 'isValid' : 'notValid'
-    alert("Your request is " + JSON.stringify(request) + ' and ' + isValid )
+    alert("Your request is " + JSON.stringify(request))
   }
 
   return (
     <form onSubmit={onSubmit}>
-      <label>
+      <h3>Not Controlled Form</h3>
+      <section>
+        <label>
           Username:
-          <input type="text" ref={usernameInput} />
-      </label>
-      <label>
+          <Input type="text" inputRef={usernameInput} />
+        </label>
+      </section>
+      <section>
+        <label>
           Password:
-          <input type="password" ref={passwordInput} />
-      </label>
-      <button type="submit">Enviar request</button>
+          <Input type="password" inputRef={passwordInput} />
+        </label>
+      </section>
+      <section>
+        <Button type="submit">Send Form</Button>
+      </section>
     </form>
   )
 

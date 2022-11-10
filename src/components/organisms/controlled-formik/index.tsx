@@ -1,6 +1,10 @@
-import { useFormik } from 'formik';
-import React from 'react';
-import * as Yup from 'yup';
+import { useFormik } from 'formik'
+import React from 'react'
+import * as Yup from 'yup'
+import { promiseMock } from '../../../utils/mocks/promiseMock'
+
+import { Input } from '../../atoms/input'
+import { Button } from '../../atoms/button'
 
 const ControlledFormik = () => {
   const formik = useFormik({
@@ -19,48 +23,51 @@ const ControlledFormik = () => {
     }),
     onSubmit: async (values) => {
       formik.setSubmitting(true)
-      await new Promise((resolve) => setTimeout(() => {resolve({})}, 3000))
+      await promiseMock()
       formik.setSubmitting(false)
       if (formik.isValid) alert(JSON.stringify(values, null, 2));
     }
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const {valid} = e.target.validity
+    const { valid } = e.target.validity
     if (valid) formik.handleChange(e)
   }
 
   return (
     <form onSubmit={formik.handleSubmit}>
-      <label htmlFor="username">Username</label>
-      <input
-        id="username"
-        name="username"
-        type="text"
-        pattern="[A-Za-z0-9]*"
-        maxLength={10}
-        onChange={handleChange}
-        onBlur={formik.handleBlur}
-        value={formik.values.username}
-      />
-      {formik.touched.username && formik.errors.username ? (
-        <div>{formik.errors.username}</div>
-      ) : null}
-
-      <label htmlFor="password">Password</label>
-      <input
-        id="password"
-        name="password"
-        type="password"
-        onChange={handleChange}
-        onBlur={formik.handleBlur}
-        value={formik.values.password}
-      />
-      {formik.touched.password && formik.errors.password ? (
-        <div>{formik.errors.password}</div>
-      ) : null}
-
-      <button type="submit" disabled={!formik.isValid}>{formik.isSubmitting ? 'cargando...' : 'Enviar request'}</button>
+      <h3>Controlled Formik</h3>
+      <section>
+        <label htmlFor="username">
+          Username
+          <Input
+            id="username"
+            name="username"
+            type="text"
+            pattern="[A-Za-z0-9]*"
+            maxLength={10}
+            onChange={handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.username}
+            error={formik.touched.username && formik.errors.username}
+          />
+        </label>
+      </section>
+      <section>
+        <label htmlFor="password">
+          Password
+          <Input
+            id="password"
+            name="password"
+            type="password"
+            onChange={handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.password}
+            error={formik.touched.password && formik.errors.password}
+          />
+        </label>
+      </section>
+      <Button type="submit" disabled={!formik.isValid || formik.isSubmitting}>{formik.isSubmitting ? 'cargando...' : 'Send Form'}</Button>
     </form>
   )
 }

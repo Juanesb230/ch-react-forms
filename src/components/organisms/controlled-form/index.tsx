@@ -1,21 +1,29 @@
 import { useState } from "react"
 import useValidateForm from "./use-validate-form"
+import { INITIAL_VALUES } from "../../../utils/constants/formContants"
 
-const initialValues = { username: '', password: '' }
+import { Input } from "../../atoms/input"
+import { Button } from "../../atoms/button"
 
 const ControlledForm = () => {
 
-  const [formValues, setformValues] = useState(initialValues)
-  const { errorsForm, validate } = useValidateForm()
+  const [formValues, setformValues] = useState(INITIAL_VALUES)
+  const { errorsForm, isValid, validateInputs, disabledValidation } = useValidateForm()
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
-    setformValues(state => ({...state, [name]: value}))
+    setformValues(state => ({ ...state, [name]: value }))
+    //validateInputs(name, value)
   }
 
-  const onBlur = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleBlur = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
-    validate(name, value)
+    validateInputs(name, value)
+  }
+
+  const handleFocus = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name } = e.target
+    disabledValidation(name)
   }
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -25,17 +33,38 @@ const ControlledForm = () => {
 
   return (
     <form onSubmit={onSubmit}>
-      <label>
+      <h3>Controlled Form</h3>
+      <section>
+        <label>
           Username:
-          <input type="text" name="username" onChange={handleChange} onBlur={onBlur} value={formValues.username} />
-          {errorsForm.username && <p style={{fontSize: 12}}>{errorsForm.username}</p>}
-      </label>
-      <label>
+          <Input
+            type="text"
+            name="username"
+            onChange={handleChange}
+            onBlur={handleBlur}
+            onFocus={handleFocus}
+            value={formValues.username}
+            error={!isValid && errorsForm.username}
+          />
+        </label>
+      </section>
+      <section>
+        <label>
           Password:
-          <input type="password" name="password" onChange={handleChange} onBlur={onBlur} value={formValues.password} />
-          {errorsForm.password && <p style={{fontSize: 12}}>{errorsForm.password}</p>}
-      </label>
-      <button type="submit">Enviar request</button>
+          <Input
+            type="password"
+            name="password"
+            onChange={handleChange}
+            onBlur={handleBlur}
+            onFocus={handleFocus}
+            value={formValues.password}
+            error={!isValid && errorsForm.password}
+          />
+        </label>
+      </section>
+      <section>
+        <Button type="submit" disabled={!isValid}>Send Form</Button>
+      </section>
     </form>
   )
 }
