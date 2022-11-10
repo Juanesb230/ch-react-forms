@@ -5,28 +5,26 @@ import { promiseMock } from '../../../utils/mocks/promiseMock'
 
 import { Input } from '../../atoms/input'
 import { Button } from '../../atoms/button'
+import { INITIAL_VALUES } from '../../../utils/constants/formContants'
 
 const ControlledFormik = () => {
   const formik = useFormik({
-    initialValues: {
-      username: '',
-      password: ''
-    },
+    initialValues: INITIAL_VALUES,
     validationSchema: Yup.object({
       selector: Yup.string(),
       username: Yup.string()
-        .min(5, 'Must be 5 characters or less')
+        .min(5, ({ min }) => `Must be ${min} characters or more`)
         .required('Required'),
       password: Yup.string()
-        .min(8, 'Must be 8 characters or less')
+        .min(8, ({ min }) => `Must be ${min} characters or more`)
         .required('Required'),
     }),
     onSubmit: async (values) => {
       formik.setSubmitting(true)
       await promiseMock()
       formik.setSubmitting(false)
-      if (formik.isValid) alert(JSON.stringify(values, null, 2));
-    }
+      alert(JSON.stringify(values, null, 2));
+    },
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
