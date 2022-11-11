@@ -1,4 +1,4 @@
-import { useRef, useEffect, useCallback } from "react"
+import React, { useRef } from "react"
 import { Input } from "../../atoms/input"
 import { Button } from "../../atoms/button"
 
@@ -6,29 +6,6 @@ const NotControlledForm = () => {
 
   const usernameInput = useRef<HTMLInputElement>(null)
   const passwordInput = useRef<HTMLInputElement>(null)
-
-  const handleChangeUsername = useCallback(() => {
-    if (!usernameInput.current?.value) {
-      usernameInput.current?.setCustomValidity('The field username is required')
-      usernameInput.current?.reportValidity()
-      return
-    }
-    if (usernameInput.current.value.length < 5) {
-      usernameInput.current?.setCustomValidity('The field username has min len of 5')
-      usernameInput.current?.reportValidity()
-      return
-    }
-    usernameInput.current.setCustomValidity('')
-  }, [])
-
-  useEffect(() => {
-    const usernameInputCurrent = usernameInput.current
-    usernameInputCurrent?.addEventListener('input', handleChangeUsername)
-  
-    return () => {
-      usernameInputCurrent?.removeEventListener('input', handleChangeUsername)
-    }
-  }, [handleChangeUsername])
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -45,13 +22,13 @@ const NotControlledForm = () => {
       <section>
         <label>
           Username:
-          <Input type="text" inputRef={usernameInput} />
+          <Input type="text" name="username" inputRef={usernameInput} />
         </label>
       </section>
       <section>
         <label>
           Password:
-          <Input type="password" inputRef={passwordInput} />
+          <Input type="password" name="password" inputRef={passwordInput} />
         </label>
       </section>
       <section>

@@ -1,20 +1,15 @@
-import { useState, useEffect, useCallback } from "react"
-import { INITIAL_VALUES } from "../../../../utils/constants/formContants"
+import { useState, useEffect } from "react"
+import { INITIAL_ERRORS } from "../../../../utils/constants/formContants"
 
 const useValidateForm = () => {
 
-  const [errorsForm, setErrorsForm] = useState(INITIAL_VALUES)
-  const [isValid, setisValid] = useState(false)
-
-  const validateForm = useCallback(() => {
-    if (Object.values(errorsForm).find(value => !!value)) setisValid(false)
-    else setisValid(true)
-  }, [errorsForm])
+  const [errorsForm, setErrorsForm] = useState(INITIAL_ERRORS)
+  const [isValid, setIsValid] = useState(false)
 
   useEffect(() => {
-    validateForm()
-  }, [validateForm])
-  
+    if(Object.values(errorsForm).find(value => !!value)) setIsValid(false)
+    else setIsValid(true)
+  }, [errorsForm])
 
   const validateInputs = (name: string, value: string) => {
     if (!value) {
@@ -33,11 +28,7 @@ const useValidateForm = () => {
     setErrorsForm(state => ({...state, [name]: ''}))
   }
 
-  const disabledValidation = (name: string) => {
-    setErrorsForm(state => ({...state, [name]: ''}))
-  }
-
-  return {errorsForm, isValid, validateInputs, disabledValidation}
+  return {errorsForm, isValid, validateInputs}
 }
 
 export default useValidateForm

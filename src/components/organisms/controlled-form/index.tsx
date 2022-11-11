@@ -1,6 +1,6 @@
-import { useState } from "react"
+import React, { useState } from "react"
 import useValidateForm from "./use-validate-form"
-import { INITIAL_VALUES } from "../../../utils/constants/formContants"
+import { INITIAL_VALUES, INITIAL_TOUCHED } from "../../../utils/constants/formContants"
 
 import { Input } from "../../atoms/input"
 import { Button } from "../../atoms/button"
@@ -8,27 +8,23 @@ import { Button } from "../../atoms/button"
 const ControlledForm = () => {
 
   const [formValues, setformValues] = useState(INITIAL_VALUES)
-  const { errorsForm, isValid, validateInputs, disabledValidation } = useValidateForm()
+  const [touched, setTouched ] = useState(INITIAL_TOUCHED)
+  const { errorsForm, isValid, validateInputs } = useValidateForm()
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
     setformValues(state => ({ ...state, [name]: value }))
-    //validateInputs(name, value)
-  }
-
-  const handleBlur = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target
     validateInputs(name, value)
-  }
-
-  const handleFocus = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name } = e.target
-    disabledValidation(name)
   }
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     alert("Your request is " + JSON.stringify(formValues))
+  }
+
+  const hasTouched = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name } = e.target
+    setTouched(state => ({...state, [name]: true}))
   }
 
   return (
@@ -41,10 +37,10 @@ const ControlledForm = () => {
             type="text"
             name="username"
             onChange={handleChange}
-            onBlur={handleBlur}
-            onFocus={handleFocus}
             value={formValues.username}
-            error={!isValid && errorsForm.username}
+            error={touched.username && errorsForm.username}
+            pattern="[a-z0-9]*"
+            onBlur={hasTouched}
           />
         </label>
       </section>
@@ -55,10 +51,10 @@ const ControlledForm = () => {
             type="password"
             name="password"
             onChange={handleChange}
-            onBlur={handleBlur}
-            onFocus={handleFocus}
             value={formValues.password}
-            error={!isValid && errorsForm.password}
+            error={touched.password && errorsForm.password}
+            pattern="[0-9]*"
+            onBlur={hasTouched}
           />
         </label>
       </section>

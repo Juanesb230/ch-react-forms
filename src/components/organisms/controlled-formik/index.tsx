@@ -1,5 +1,4 @@
 import { useFormik } from 'formik'
-import React from 'react'
 import * as Yup from 'yup'
 import { promiseMock } from '../../../utils/mocks/promiseMock'
 
@@ -27,11 +26,6 @@ const ControlledFormik = () => {
     },
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { valid } = e.target.validity
-    if (valid) formik.handleChange(e)
-  }
-
   return (
     <form onSubmit={formik.handleSubmit}>
       <h3>Controlled Formik</h3>
@@ -42,9 +36,8 @@ const ControlledFormik = () => {
             id="username"
             name="username"
             type="text"
-            pattern="[A-Za-z0-9]*"
             maxLength={10}
-            onChange={handleChange}
+            onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             value={formik.values.username}
             error={formik.touched.username && formik.errors.username}
@@ -58,14 +51,14 @@ const ControlledFormik = () => {
             id="password"
             name="password"
             type="password"
-            onChange={handleChange}
+            onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             value={formik.values.password}
             error={formik.touched.password && formik.errors.password}
           />
         </label>
       </section>
-      <Button type="submit" disabled={!formik.isValid || formik.isSubmitting}>{formik.isSubmitting ? 'cargando...' : 'Send Form'}</Button>
+      <Button type="submit" disabled={!formik.isValid}>{formik.isSubmitting ? 'cargando...' : 'Send Form'}</Button>
     </form>
   )
 }
